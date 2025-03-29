@@ -1,1 +1,1 @@
-# fridge-app-crud
+# CRUD Microservice for Fridge App
