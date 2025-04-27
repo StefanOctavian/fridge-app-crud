@@ -1,4 +1,6 @@
 ﻿using System.Security.Claims;
+using System.Text.Json.Serialization;
+using System.Text.Json;
 using System.Text;
 
 using Microsoft.EntityFrameworkCore;
@@ -12,8 +14,6 @@ using Crud.Converters;
 using Crud.Services.Interfaces;
 using Crud.Services.Implementations;
 using Crud.Database;
-using System.Text.Json.Serialization;
-using System.Text.Json;
 
 namespace Crud.Extensions;
 
@@ -80,10 +80,7 @@ public static class WebApplicationBuilderExtensions
     /// It requires that the JWT needs to have the given claims in the configuration.
     /// </summary>
     private static AuthorizationPolicyBuilder AddDefaultPolicy(this AuthorizationPolicyBuilder policy) =>
-        policy.RequireClaim(ClaimTypes.NameIdentifier)
-            .RequireClaim(ClaimTypes.Name)
-            .RequireClaim(ClaimTypes.Email)
-            .RequireClaim(ClaimTypes.Role);
+        policy.RequireClaim(ClaimTypes.NameIdentifier);
 
 
     /// <summary>
@@ -165,12 +162,11 @@ public static class WebApplicationBuilderExtensions
         builder.Services.Configure<JwtConfiguration>(builder.Configuration.GetSection(nameof(JwtConfiguration)));
         builder.Services.Configure<MailConfiguration>(builder.Configuration.GetSection(nameof(MailConfiguration)));
 
-        builder.Services.AddScoped<IAuthService, AuthService>();
         builder.Services.AddScoped<IUserService, UserService>();
-        builder.Services.AddScoped<IMailService, MailService>();
         builder.Services.AddScoped<IRecipeService, RecipeService>();
         builder.Services.AddScoped<IIngredientService, IngredientService>();
         builder.Services.AddScoped<IReviewService, ReviewService>();
+        builder.Services.AddScoped<IActivationTokenService, ActivationTokenService>();
 
         return builder;
     }

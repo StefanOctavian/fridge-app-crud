@@ -11,6 +11,12 @@ namespace Crud.Controllers;
 [Route("api/[controller]/")]
 public class UserController(IUserService userService, IReviewService reviewService) : ControllerBase
 {
+    [HttpPost]
+    public async Task<ActionResult<UserDTO>> Create([FromBody] CreateUserDTO user)
+    {
+        return Ok(await userService.Create(user));
+    }
+
     [HttpGet("{id:guid}")]
     public async Task<ActionResult<UserDTO>> Read([FromRoute] Guid id)
         => Ok(await userService.Read(id));

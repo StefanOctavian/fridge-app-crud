@@ -54,6 +54,7 @@ public static class SeederService
             {
                 dbContext.Ingredients.Add(ingredient);
             }
+            dbContext.SaveChanges();
         }
 
         if (dbContext.Recipes.FirstOrDefault(r => r.Title == "Simple Cheesecake") == null)

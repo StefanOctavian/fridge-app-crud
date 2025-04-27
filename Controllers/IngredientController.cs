@@ -18,17 +18,14 @@ public class IngredientController(IIngredientService ingredientService) : Contro
         => Ok(await ingredientService.Read(id));
 
     [HttpGet]
-    public async Task<ActionResult<IngredientDTO>> Read([FromQuery] string name)
+    public async Task<ActionResult<IngredientDTO>> Read([FromQuery] string? name)
     {
-        if (string.IsNullOrWhiteSpace(name))
-            return BadRequest("Name cannot be null or empty.");
-        return Ok(await ingredientService.Read(name));
-    }
+        if (name is null)
+            return Ok(await ingredientService.Read());
 
-    [HttpGet]
-    public async Task<ActionResult<List<IngredientDTO>>> Read()
-    {
-        return Ok(await ingredientService.Read());
+        if (string.IsNullOrWhiteSpace(name))
+            return BadRequest("Name cannot be empty");
+        return Ok(await ingredientService.Read(name));
     }
 
     [HttpPost]

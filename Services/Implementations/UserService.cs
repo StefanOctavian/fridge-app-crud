@@ -21,9 +21,31 @@ public class UserService(FridgeAppDatabaseContext dbContext) : IUserService
             Password = user.Password,
             Salt = user.Salt,
             Email = user.Email,
-            Role = user.Role
+            Role = user.Role,
+            IsVerified = user.IsVerified
         };
     }
+
+    public async Task<UserDTO> Create(CreateUserDTO user)
+    {
+        var newUser = new User
+        {
+            FirstName = user.FirstName,
+            LastName = user.LastName,
+            Password = user.Password,
+            Salt = user.Salt,
+            Email = user.Email,
+            Role = user.Role,
+            IsVerified = false,
+            CreatedAt = DateTime.UtcNow,
+            UpdatedAt = DateTime.UtcNow
+        };
+
+        dbContext.Users.Add(newUser);
+        await dbContext.SaveChangesAsync();
+        return UserToDTO(newUser);
+    }
+
     public async Task<UserDTO> Read(Guid id)
     {
         var user = await dbContext.Users.FindAsync(id) ?? throw CommonErrors.UserNotFound;
@@ -32,7 +54,7 @@ public class UserService(FridgeAppDatabaseContext dbContext) : IUserService
 
     public async Task<UserDTO> Read(string email)
     {
-        var user = await dbContext.Users.Where(u => u.Email == email).FirstAsync()
+        var user = await dbContext.Users.Where(u => u.Email == email).FirstOrDefaultAsync()
             ?? throw CommonErrors.UserNotFound;
         return UserToDTO(user);
     }
@@ -43,6 +65,11 @@ public class UserService(FridgeAppDatabaseContext dbContext) : IUserService
 
         user.FirstName = userUpdate.FirstName ?? user.FirstName;
         user.LastName = userUpdate.LastName ?? user.LastName;
+        user.Password = userUpdate.Password ?? user.Password;
+        user.Salt = userUpdate.Salt ?? user.Salt;
+        user.Email = userUpdate.Email ?? user.Email;
+        user.Role = userUpdate.Role ?? user.Role;
+        user.IsVerified = userUpdate.IsVerified ?? user.IsVerified;
         user.UpdatedAt = DateTime.UtcNow;
 
         await dbContext.SaveChangesAsync();
