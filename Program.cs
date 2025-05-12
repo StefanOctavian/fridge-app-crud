@@ -25,8 +25,8 @@ public class Program
         {
             app.UseSwagger();
             app.UseSwaggerUI();
-            SeederService.Seed(app.Services);
         }
+        SeederService.Seed(app.Services);
 
         app.UseMiddleware<ErrorHandlingMiddleware>();
         app.UseHttpsRedirection();
