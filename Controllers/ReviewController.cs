@@ -12,6 +12,16 @@ namespace Crud.Controllers;
 [Route("api/[controller]")]
 public class ReviewController(IReviewService reviewService) : ControllerBase
 {
+    [HttpGet]
+    [Route("api/Recipe/{recipeId:guid}/Review/User/{userId:guid}")]
+    public async Task<ActionResult<ReviewDTO>> Read(
+        [FromRoute] Guid recipeId, [FromRoute] Guid userId
+    )
+    {
+        var review = await reviewService.Read(userId, recipeId);
+        return Ok(new { data = review });
+    }
+
     [HttpPost]
     [Route("api/Recipe/{recipeId:guid}/Review/User/{userId:guid}")]
     public async Task<ActionResult<ReviewDTO>> Create(
@@ -19,14 +29,14 @@ public class ReviewController(IReviewService reviewService) : ControllerBase
     )
     {
         var review = await reviewService.Create(userId, recipeId, reviewDto);
-        return Ok(review);
+        return Ok(new { data = review });
     }
 
     [HttpGet("/User/{userId:guid}")]
     public async Task<ActionResult<List<ReviewDTO>>> ReadByUser([FromRoute] Guid userId)
     {
         var reviews = await reviewService.ReadByUser(userId);
-        return Ok(reviews);
+        return Ok(new { data = reviews });
     }
 
     [HttpPatch("{reviewId:guid}")]
@@ -35,14 +45,14 @@ public class ReviewController(IReviewService reviewService) : ControllerBase
     )
     {
         var review = await reviewService.Update(reviewId, reviewDto);
-        return Ok(review);
+        return Ok(new { data = review });
     }
 
     [HttpDelete("{reviewId:guid}")]
     public async Task<IActionResult> Delete([FromRoute] Guid reviewId)
     {
         await reviewService.Delete(reviewId);
-        return Ok();
+        return Ok(new {});
     }
 }
 

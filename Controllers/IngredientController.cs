@@ -15,35 +15,35 @@ public class IngredientController(IIngredientService ingredientService) : Contro
 
     [HttpGet("{id:guid}")]
     public async Task<ActionResult<IngredientDTO>> Read([FromRoute] Guid id)
-        => Ok(await ingredientService.Read(id));
+        => Ok(new { data = await ingredientService.Read(id) });
 
     [HttpGet]
     public async Task<ActionResult<IngredientDTO>> Read([FromQuery] string? name)
     {
         if (name is null)
-            return Ok(await ingredientService.Read());
+            return Ok(new { data = await ingredientService.Read() });
 
         if (string.IsNullOrWhiteSpace(name))
             return BadRequest("Name cannot be empty");
-        return Ok(await ingredientService.Read(name));
+        return Ok(new { data = await ingredientService.Read(name) });
     }
 
     [HttpPost]
     public async Task<ActionResult<IngredientDTO>> Create([FromBody] IngredientAddDTO ingredient)
     {
-        return Ok(await ingredientService.Create(ingredient));
+        return Ok(new { data = await ingredientService.Create(ingredient) });
     }
 
     [HttpPatch("{id:guid}")]
     public async Task<ActionResult<IngredientDTO>> Update([FromRoute] Guid id, [FromBody] IngredientUpdateDTO ingredient)
     {
-        return Ok(await ingredientService.Update(id, ingredient));
+        return Ok(new { data = await ingredientService.Update(id, ingredient) });
     }
 
     [HttpDelete("{id:guid}")]
     public async Task<ActionResult> Delete([FromRoute] Guid id)
     {
         await ingredientService.Delete(id);
-        return Ok();
+        return Ok(new {});
     }
 }

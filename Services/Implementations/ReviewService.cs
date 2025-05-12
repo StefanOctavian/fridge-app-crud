@@ -21,13 +21,22 @@ public class ReviewService(FridgeAppDatabaseContext dbContext) : IReviewService
         );
     }
 
-    public async Task<IEnumerable<ReviewDTO>> ReadByUser(Guid userId)
+    public async Task<ReviewDTO> Read(Guid userId, Guid recipeId)
+    {
+        var review = await dbContext.Reviews
+            .FirstOrDefaultAsync(r => r.UserId == userId && r.RecipeId == recipeId)
+            ?? throw new NotFoundException("Review not found");
+
+        return ReviewToDTO(review);
+    }
+
+    public async Task<List<ReviewDTO>> ReadByUser(Guid userId)
     {
         var reviews = await dbContext.Reviews
             .Where(r => r.UserId == userId)
             .ToListAsync();
 
-        return reviews.Select(ReviewToDTO);
+        return [..reviews.Select(ReviewToDTO)];
     }
 
     public async Task<ReviewDTO> Create(Guid userId, Guid recipeId, ReviewAddDTO reviewDto)

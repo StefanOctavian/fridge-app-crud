@@ -15,28 +15,28 @@ public class RecipeController(IRecipeService recipeService) : ControllerBase
     public async Task<ActionResult> Create([FromBody] RecipeCreateDTO recipe)
     {
         await recipeService.Create(recipe);
-        return Ok();
+        return Ok(new {});
     }
 
     [HttpGet("{id:guid}")]
     public async Task<ActionResult<RecipeDTO>> Read([FromRoute] Guid id)
-        => Ok(await recipeService.Read(id));
+        => Ok(new { data = await recipeService.Read(id) });
 
     [HttpGet]
     public async Task<ActionResult<List<RecipePreviewDTO>>> Read(
         [FromQuery] bool withIngredients = false,
         [FromQuery] bool withReviews = false
-    ) => Ok(await recipeService.Read(withIngredients, withReviews));
+    ) => Ok(new { data = await recipeService.Read(withIngredients, withReviews) });
 
     [HttpPatch("{id:guid}")]
     public async Task<ActionResult<RecipeDTO>> Update(
         [FromRoute] Guid id, [FromBody] RecipeUpdateDTO recipeUpdates
-    ) => Ok(await recipeService.Update(id, recipeUpdates));
+    ) => Ok(new { data = await recipeService.Update(id, recipeUpdates) });
 
     [HttpDelete("{id:guid}")]
     public async Task<ActionResult> Delete([FromRoute] Guid id)
     {
         await recipeService.Delete(id);
-        return Ok();
+        return Ok(new {});
     }
 }

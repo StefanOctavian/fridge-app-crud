@@ -13,25 +13,25 @@ public class ActivationTokenController(IActivationTokenService activationTokenSe
 {
 
     [HttpGet]
-    [Route("/api/User/ActivationToken/{token}")]
+    [Route("/api/User/[controller]/{token}")]
     public async Task<ActionResult<UserDTO>> Read([FromRoute] string token)
-        => Ok(await activationTokenService.Read(token));
+        => Ok(new { data = await activationTokenService.Read(token) });
 
     [HttpPost]
-    [Route("/api/User/{userId:guid}/ActivationToken")]
+    [Route("/api/User/{userId:guid}/[controller]")]
     public async Task<ActionResult> Create(
         [FromRoute] Guid userId,
         [FromBody] ActivationTokenDTO activationTokenDTO
     )
     {
         await activationTokenService.Create(userId, activationTokenDTO);
-        return Ok();
+        return Ok(new {});
     }
 
     [HttpDelete]
     public async Task<ActionResult> Delete([FromRoute] string token)
     {
         await activationTokenService.Delete(token);
-        return Ok();
+        return Ok(new {});
     }
 }

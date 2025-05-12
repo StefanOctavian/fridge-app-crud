@@ -46,16 +46,17 @@ public class UserService(FridgeAppDatabaseContext dbContext) : IUserService
         return UserToDTO(newUser);
     }
 
-    public async Task<UserDTO> Read(Guid id)
+    public async Task<UserDTO?> Read(Guid id)
     {
-        var user = await dbContext.Users.FindAsync(id) ?? throw CommonErrors.UserNotFound;
+        var user = await dbContext.Users.FindAsync(id);
+        if (user == null) return null;
         return UserToDTO(user);
     }
 
-    public async Task<UserDTO> Read(string email)
+    public async Task<UserDTO?> Read(string email)
     {
-        var user = await dbContext.Users.Where(u => u.Email == email).FirstOrDefaultAsync()
-            ?? throw CommonErrors.UserNotFound;
+        var user = await dbContext.Users.Where(u => u.Email == email).FirstOrDefaultAsync();
+        if (user == null) return null;
         return UserToDTO(user);
     }
 
